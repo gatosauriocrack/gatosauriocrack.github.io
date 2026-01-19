@@ -1,0 +1,12 @@
+<a href="https://www.instagram.com/gatosauriocrack" target="_blank" class="red-link">
+                    <i class="fab fa-instagram social-icon instagram"></i> Instagram
+                </a>
+                <a href="https://x.com/gatosauriocrack" target="_blank" class="red-link">
+                    <i class="fab fa-twitter social-icon twitter"></i> X [Twitter]
+                </a>
+                <a href="https://m.twitch.tv/gatosauriocrack0/home" target="_blank" class="red-link">
+                    <i class="fab fa-twitch social-icon twitch"></i> Twitch
+                </a>
+                <a href="https://discord.gg/8wVxZs8eFJ" target="_blank" class="red-link">
+                    <i class="fab fa-discord social-icon discord"></i> Discord 
+                </a>
