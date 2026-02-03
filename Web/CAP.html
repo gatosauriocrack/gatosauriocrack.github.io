@@ -85,11 +85,16 @@
             color: black;
             font-weight: bold;
         }
-        .campo-nombre {
-            margin-top: 20px;
+        .campo-input {
+            margin-top: 15px;
             text-align: left;
         }
-        #nombreModelo {
+        label {
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"], textarea {
             width: 100%;
             padding: 10px;
             background: #222;
@@ -97,7 +102,11 @@
             color: white;
             border-radius: 5px;
             box-sizing: border-box;
-            margin-top: 5px;
+            font-family: Arial, sans-serif;
+        }
+        textarea {
+            height: 80px;
+            resize: none;
         }
         #canvasFirma {
             background: #ffffff;
@@ -173,9 +182,21 @@
                     <span class="btn-check">NO Acepto</span>
                 </label>
             </div>
-            <div class="campo-nombre">
+            <div class="campo-input">
                 <label for="nombreModelo">Nombre y apodo:</label>
                 <input type="text" id="nombreModelo" placeholder="Escriba su nombre completo">
+            </div>
+            <div class="campo-input">
+                <label for="correo1">Correo de contacto 1:</label>
+                <input type="email" id="correo1" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="campo-input">
+                <label for="correo2">Correo de contacto 2 (opcional):</label>
+                <input type="email" id="correo2" placeholder="otro@correo.com">
+            </div>
+            <div class="campo-input">
+                <label for="sugerencias">Sugerencias o cambios (opcional):</label>
+                <textarea id="sugerencias" placeholder="Escribe aquí si deseas proponer algún cambio o sugerencia..."></textarea>
             </div>
             <div class="firma-container">
                 <p>Firma digital (dibuje aquí) opcional:</p>
@@ -236,9 +257,13 @@
                 const si = document.getElementById('opcionSi').checked;
                 const no = document.getElementById('opcionNo').checked;
                 const nombre = document.getElementById('nombreModelo').value;
+                const correo1 = document.getElementById('correo1').value;
+                const correo2 = document.getElementById('correo2').value;
+                const sugerencias = document.getElementById('sugerencias').value;
 
                 if (!si && !no) return alert("Selecciona SÍ o NO.");
                 if (nombre.trim() === "") return alert("Ingresa tu nombre.");
+                if (correo1.trim() === "") return alert("Ingresa al menos un correo de contacto.");
 
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = canvas.width;
@@ -258,10 +283,20 @@
                 const fecha = new Date().toLocaleString();
                 const miCorreo = "gw.bikot@gmail.com";
                 const asunto = encodeURIComponent(`Acuerdo de Confianza - ${nombre}`);
-                const cuerpo = encodeURIComponent(`Hola, soy ${nombre}.\n\nHe revisado el Acuerdo el día ${fecha}.\nMi decisión es: ${decision}.\n\nAdjunto envío mi firma PNG descargada.`);
+                
+                let cuerpoTexto = `Hola, soy ${nombre}.\n\nHe revisado el Acuerdo el día ${fecha}.\nMi decisión es: ${decision}.\n\nMis correos de contacto:\n1. ${correo1}`;
+                if(correo2.trim() !== "") cuerpoTexto += `\n2. ${correo2}`;
+                
+                if(sugerencias.trim() !== "") {
+                    cuerpoTexto += `\n\nSugerencias o comentarios:\n${sugerencias}`;
+                }
+
+                cuerpoTexto += `\n\nAdjunto envío mi firma PNG descargada con fondo blanco.`;
+
+                const cuerpo = encodeURIComponent(cuerpoTexto);
 
                 window.location.href = `mailto:${miCorreo}?subject=${asunto}&body=${cuerpo}`;
-                alert("Firma descargada con fondo blanco. Por favor adjúntala en el correo.");
+                alert("Firma descargada. Por favor adjúntala en el correo que se abrirá.");
             });
         });
     </script>
