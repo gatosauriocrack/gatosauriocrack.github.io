@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acuerdo de Confianza</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-naranja-principal: #EA7900; 
+            --color-fondo: #282c34; 
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--color-fondo);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .header-bar {
+            width: 100%;
+            height: 60px;
+            background-color: var(--color-naranja-principal);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+        .app-icon-custom {
+            font-size: 80px;
+            line-height: 1; 
+            display: flex;
+            align-items: center;
+            color: #000000;
+            font-style: normal !important;
+        }
+        .icon {
+            font-style: normal !important;
+        }
+        .container {
+            padding: 100px 20px 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .acuerdo-box {
+            background-color: #333742;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .lista-acuerdo {
+            text-align: left;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .opciones {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .radio-label input {
+            display: none;
+        }
+        .btn-check {
+            padding: 10px 20px;
+            background: #444;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        input[type="radio"]:checked + .btn-check {
+            background: var(--color-naranja-principal);
+            color: black;
+            font-weight: bold;
+        }
+        .campo-nombre {
+            margin-top: 20px;
+            text-align: left;
+        }
+        #nombreModelo {
+            width: 100%;
+            padding: 10px;
+            background: #222;
+            border: 1px solid var(--color-naranja-principal);
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+        #canvasFirma {
+            background: #ffffff;
+            border: 2px solid var(--color-naranja-principal);
+            border-radius: 8px;
+            width: 100%;
+            height: 150px;
+            touch-action: none;
+            margin-top: 10px;
+        }
+        #borrarFirma {
+            background: none;
+            border: none;
+            color: #aaa;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.85em;
+        }
+        .btn-final {
+            width: 100%;
+            background: var(--color-naranja-principal);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 25px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        @font-face {
+            font-family: 'FontAwesome-Gatosauriocrack';
+            src: url('fonts/FontAwesome-Gatosauriocrack.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        .icon {
+            font-family: 'FontAwesome-Gatosauriocrack' !important;
+        }
+        .icon-meli-icono:before {
+            content: "\e900";
+        }
+    </style>
+</head>
+<body>
+    <header class="header-bar">
+        <div class="header-content">
+            <span class="app-icon-custom">
+                <i class="icon icon-meli-icono"></i>
+            </span>
+        </div>
+    </header>
+    <main class="container">
+        <section class="acuerdo-box">
+            <h1>Acuerdo de Confianza Artística</h1>
+            <p>Uso de material fotográfico como referencia visual.</p>
+            <ul class="lista-acuerdo">
+                <li><strong>Confidencialidad:</strong> Fotos no compartidas con terceros.</li>
+                <li><strong>Uso Exclusivo:</strong> Solo base para dibujos o pinturas.</li>
+                <li><strong>Derechos de Autor:</strong> Artista (Obra), Modelo (Identidad).</li>
+                <li><strong>Publicación:</strong> Respeto al anonimato si se solicita.</li>
+            </ul>
+            <hr>
+            <div class="opciones">
+                <label class="radio-label">
+                    <input type="radio" name="decision" value="SI" id="opcionSi">
+                    <span class="btn-check">SÍ, Acepto</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="decision" value="NO" id="opcionNo">
+                    <span class="btn-check">NO Acepto</span>
+                </label>
+            </div>
+            <div class="campo-nombre">
+                <label for="nombreModelo">Nombre de la Modelo:</label>
+                <input type="text" id="nombreModelo" placeholder="Escriba su nombre completo">
+            </div>
+            <div class="firma-container">
+                <p>Firma digital (dibuje aquí):</p>
+                <canvas id="canvasFirma"></canvas>
+                <button type="button" id="borrarFirma">Limpiar Firma</button>
+            </div>
+            <button id="btnFinalizar" class="btn-final">FINALIZAR Y ENVIAR</button>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('canvasFirma');
+            const ctx = canvas.getContext('2d');
+            const btnFinalizar = document.getElementById('btnFinalizar');
+            const btnBorrar = document.getElementById('borrarFirma');
+            let dibujando = false;
+
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            function obtenerPosicion(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clienteX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clienteY = e.clientY || (e.touches && e.touches[0].clientY);
+                return { x: clienteX - rect.left, y: clienteY - rect.top };
+            }
+
+            function iniciar(e) {
+                dibujando = true;
+                const pos = obtenerPosicion(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function trazar(e) {
+                if (!dibujando) return;
+                if (e.touches) e.preventDefault();
+                const pos = obtenerPosicion(e);
+                ctx.lineWidth = 2;
+                ctx.lineCap = "round";
+                ctx.strokeStyle = "#000";
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            canvas.addEventListener('mousedown', iniciar);
+            canvas.addEventListener('mousemove', trazar);
+            window.addEventListener('mouseup', () => dibujando = false);
+            canvas.addEventListener('touchstart', iniciar);
+            canvas.addEventListener('touchmove', trazar);
+            canvas.addEventListener('touchend', () => dibujando = false);
+
+            btnBorrar.addEventListener('click', () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+            btnFinalizar.addEventListener('click', () => {
+                const si = document.getElementById('opcionSi').checked;
+                const no = document.getElementById('opcionNo').checked;
+                const nombre = document.getElementById('nombreModelo').value;
+
+                if (!si && !no) return alert("Selecciona SÍ o NO.");
+                if (nombre.trim() === "") return alert("Ingresa tu nombre.");
+
+                const firmaImagen = canvas.toDataURL("image/png");
+                const linkFirma = document.createElement('a');
+                linkFirma.href = firmaImagen;
+                linkFirma.download = `firma_${nombre.replace(/\s+/g, '_')}.png`;
+                linkFirma.click();
+
+                const decision = si ? "ACEPTA" : "NO ACEPTA";
+                const fecha = new Date().toLocaleString();
+                const miCorreo = "gatosauriocrackworl@gmail.com";
+                const asunto = encodeURIComponent(`Acuerdo de Confianza - ${nombre}`);
+                const cuerpo = encodeURIComponent(`Hola, soy ${nombre}.\n\nHe revisado el Acuerdo el día ${fecha}.\nMi decisión es: ${decision}.\n\nAdjunto envío mi firma PNG descargada.`);
+
+                window.location.href = `mailto:${miCorreo}?subject=${asunto}&body=${cuerpo}`;
+                alert("Firma descargada. Por favor adjúntala en el correo.");
+            });
+        });
+    </script>
+</body>
+</html>
