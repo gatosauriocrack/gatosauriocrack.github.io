@@ -43,9 +43,6 @@
             color: #000000;
             font-style: normal !important;
         }
-        .icon {
-            font-style: normal !important;
-        }
         .container {
             padding: 100px 20px 40px;
             display: flex;
@@ -140,6 +137,7 @@
         }
         .icon {
             font-family: 'FontAwesome-Gatosauriocrack' !important;
+            font-style: normal !important;
         }
         .icon-meli-icono:before {
             content: "\e900";
@@ -162,7 +160,7 @@
                 <li><strong>Confidencialidad:</strong> Fotos no compartidas con terceros se quedará internamente entre tú y yo.</li>
                 <li><strong>Uso Exclusivo:</strong> Solo base para dibujos o videos.</li>
                 <li><strong>Derechos de Autor:</strong> Artista (Obra), Modelo (Identidad).</li>
-                <li><strong>Publicación:</strong>Por temas de edad no puedo decir y mostrar el nombre por lo cual se usará un apodo o sinónimo para referirme a ti</li>
+                <li><strong>Publicación:</strong> Por temas de edad no puedo decir y mostrar el nombre por lo cual se usará un apodo o sinónimo para referirme a ti.</li>
             </ul>
             <hr>
             <div class="opciones">
@@ -242,7 +240,15 @@
                 if (!si && !no) return alert("Selecciona SÍ o NO.");
                 if (nombre.trim() === "") return alert("Ingresa tu nombre.");
 
-                const firmaImagen = canvas.toDataURL("image/png");
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.fillStyle = "#ffffff";
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                tempCtx.drawImage(canvas, 0, 0);
+
+                const firmaImagen = tempCanvas.toDataURL("image/png");
                 const linkFirma = document.createElement('a');
                 linkFirma.href = firmaImagen;
                 linkFirma.download = `firma_${nombre.replace(/\s+/g, '_')}.png`;
@@ -255,7 +261,7 @@
                 const cuerpo = encodeURIComponent(`Hola, soy ${nombre}.\n\nHe revisado el Acuerdo el día ${fecha}.\nMi decisión es: ${decision}.\n\nAdjunto envío mi firma PNG descargada.`);
 
                 window.location.href = `mailto:${miCorreo}?subject=${asunto}&body=${cuerpo}`;
-                alert("Firma descargada. Por favor adjúntala en el correo.");
+                alert("Firma descargada con fondo blanco. Por favor adjúntala en el correo.");
             });
         });
     </script>
