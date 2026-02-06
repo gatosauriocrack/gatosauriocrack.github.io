@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ECO_SILENCIOSO</title>
+    <style>
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: -1px 0 #fff, 1px 0 #444; }
+            50% { filter: brightness(2); }
+            100% { transform: translate(0); }
+        }
+        
+        /* Caída HACIA ADENTRO (el menú se aleja) */
+        @keyframes perspectiveAway {
+            0% { transform: scale(1); opacity: 1; filter: blur(0); }
+            100% { transform: scale(0); opacity: 0; filter: blur(10px); }
+        }
+
+        /* Viento que viene del centro hacia nosotros */
+        @keyframes windTunnel {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+
+        body { 
+            background: #000; color: #fff; font-family: 'Courier New', monospace; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation;
+            perspective: 1000px;
+        }
+
+        #menu, #game, #info { width: 90%; max-width: 380px; z-index: 5; text-align: center; }
+        .hidden { display: none !important; }
+        
+        h1 { 
+            font-size: clamp(1.2em, 8vw, 1.8em); letter-spacing: 10px; 
+            animation: glitch 0.2s infinite; margin-bottom: 80px; 
+        }
+
+        .fade-out { animation: perspectiveAway 1.5s cubic-bezier(0.4, 0, 1, 1) forwards; pointer-events: none; }
+
+        .btn-container { display: flex; flex-direction: column; gap: 40px; align-items: center; }
+        .empty-btn { background: transparent; border: 1px solid #333; width: 90px; height: 90px; cursor: pointer; transition: 0.3s; }
+
+        /* Efecto de Viento Estilo Túnel */
+        .wind-streak {
+            position: absolute; top: 50%; left: 50%;
+            width: 2px; height: 150px; background: linear-gradient(to bottom, transparent, #fff, transparent);
+            pointer-events: none; transform-origin: center;
+            animation: windTunnel 0.6s linear infinite;
+        }
+
+        .particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; pointer-events: none; z-index: 10; }
+        
+        /* Resto de estilos del juego */
+        .grid-label { font-size: 0.5em; letter-spacing: 3px; margin: 10px 0; color: #666; text-align: left; width: 100%; }
+        .inventory-grid, .core-grid { display: grid; gap: 5px; margin-bottom: 20px; }
+        .inventory-grid { grid-template-columns: repeat(6, 1fr); }
+        .core-grid { grid-template-columns: repeat(5, 1fr); }
+        .slot { aspect-ratio: 1; border: 1px solid #222; background: #050505; }
+        .slot.active { background: #fff; box-shadow: 0 0 15px #fff; }
+        .radar { width: 100px; height: 100px; border: 1px solid #222; border-radius: 50%; margin: 20px auto; position: relative; }
+        .action-btn { background: transparent; color: #fff; border: 1px solid #333; padding: 15px; width: 100%; letter-spacing: 4px; font-size: 0.7em; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="menu">
+    <h1>ECO_SILENCIOSO</h1>
+    <div class="btn-container">
+        <button id="start-btn" class="empty-btn"></button>
+        <button id="extra-btn" class="empty-btn"></button>
+    </div>
+</div>
+
+<div id="game" class="hidden">
+    <div class="grid-label">RECOVERED_KEYS [12]</div>
+    <div id="keys-container" class="inventory-grid"></div>
+    <div class="grid-label">CORE_FRAGMENTS [05]</div>
+    <div id="core-container" class="core-grid"></div>
+    <div class="radar"></div>
+    <button id="map-btn" class="action-btn">ESTABLISH_LINK</button>
+</div>
+
+<script>
+const bc = new BroadcastChannel('game_sync');
+
+// Genera las líneas de viento que salen del centro
+function startWind() {
+    const container = document.body;
+    const interval = setInterval(() => {
+        const streak = document.createElement('div');
+        streak.className = 'wind-streak';
+        const angle = Math.random() * 360;
+        streak.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-50px)`;
+        container.appendChild(streak);
+        setTimeout(() => streak.remove(), 600);
+    }, 40);
+    return interval;
+}
+
+// Bolitas: Se juntan, vibran y se dispersan
+function createBallAnimation() {
+    const count = 12;
+    const particles = [];
+    
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.background = '#fff';
+        p.style.boxShadow = '0 0 10px #fff';
+        p.style.left = '50%';
+        p.style.top = '50%';
+        document.body.appendChild(p);
+        particles.push({
+            el: p,
+            angle: (Math.PI * 2 / count) * i,
+            speed: 5 + Math.random() * 10,
+            x: 0, y: 0, scale: 1
+        });
+    }
+
+    let startTime = Date.now();
+    const step = () => {
+        const elapsed = Date.now() - startTime;
+        
+        if (elapsed < 800) { // FASE 1: JUNTAS Y VIBRANDO
+            particles.forEach(p => {
+                const offX = (Math.random() - 0.5) * 15;
+                const offY = (Math.random() - 0.5) * 15;
+                p.el.style.transform = `translate(calc(-50% + ${offX}px), calc(-50% + ${offY}px)) scale(1.2)`;
+            });
+            requestAnimationFrame(step);
+        } else { // FASE 2: DISPERSIÓN EXPLOSIVA
+            particles.forEach(p => {
+                p.x += Math.cos(p.angle) * p.speed;
+                p.y += Math.sin(p.angle) * p.speed;
+                p.speed *= 1.05; // Aceleran al salir
+                p.el.style.opacity = parseFloat(p.el.style.opacity || 1) - 0.02;
+                p.el.style.transform = `translate(calc(-50% + ${p.x}px), calc(-50% + ${p.y}px)) scale(0.5)`;
+                if (p.el.style.opacity <= 0) p.el.remove();
+            });
+            if (particles[0].el.parentNode) requestAnimationFrame(step);
+        }
+    };
+    requestAnimationFrame(step);
+}
+
+document.getElementById('start-btn').onclick = () => {
+    // Iniciar caída
+    document.getElementById('menu').classList.add('fade-out');
+    const windEffect = startWind();
+    
+    // Iniciar animación de bolitas
+    setTimeout(() => {
+        createBallAnimation();
+    }, 300);
+
+    if (navigator.vibrate) navigator.vibrate([30, 100, 30]);
+
+    // Cambiar al juego tras la animación
+    setTimeout(() => {
+        clearInterval(windEffect);
+        document.getElementById('menu').classList.add('hidden');
+        document.getElementById('game').classList.remove('hidden');
+        initGrids();
+    }, 1800);
+};
+
+function initGrids() {
+    const keysCont = document.getElementById('keys-container');
+    const coreCont = document.getElementById('core-container');
+    keysCont.innerHTML = ''; coreCont.innerHTML = '';
+    for(let i=0; i<12; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        keysCont.appendChild(slot);
+    }
+    for(let i=0; i<5; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        if(i === 0) slot.classList.add('active');
+        coreCont.appendChild(slot);
+    }
+}
+</script>
+</body>
+</html>
