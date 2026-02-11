@@ -14,38 +14,56 @@
             flex-direction: column;
             overflow: hidden;
         }
-        
+
         @font-face {
             font-family: 'FontAwesome-Gatosauriocrack';
-            src:  url('Web/fonts/FontAwesome-Gatosauriocrack.eot?ye7esj');
-            src:  url('Web/fonts/FontAwesome-Gatosauriocrack.eot?ye7esj#iefix') format('embedded-opentype'),
-                url('Web/fonts/FontAwesome-Gatosauriocrack.ttf?ye7esj') format('truetype'),
-                url('Web/fonts/FontAwesome-Gatosauriocrack.woff?ye7esj') format('woff'),
-                url('Web/fonts/FontAwesome-Gatosauriocrack.svg?ye7esj#FontAwesome-Gatosauriocrack') format('svg');
+            src: url('fonts/FontAwesome-Gatosauriocrack.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
-            font-display: block;
-        }
-        
-        [class^="icon-"], [class*=" icon-"] {
-            font-family: 'FontAwesome-Gatosauriocrack' !important;
-            speak: never;
-            font-style: normal;
-            font-weight: normal;
-            font-variant: normal;
-            text-transform: none;
-            line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        .icon-meli-icono:before { content: "\e900"; font-size: 80px !important; vertical-align: middle; }
+        @font-face {
+            font-family: 'Wcoartl-Principal';
+            src: url('Web/otf/Wcoartl.otf') format('opentype');
+        }
+
+        @font-face {
+            font-family: 'Wcoartl-Simbolos';
+            src: url('Web/otf/Wcoartl_simbolos.otf') format('opentype');
+        }
+
+        [class^="icon-"], [class*=" icon-"] {
+            font-family: 'FontAwesome-Gatosauriocrack' !important;
+            font-style: normal;
+            font-weight: normal;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .icon-meli-icono:before { 
+            content: "\e900"; 
+            font-size: 90px; 
+            color: #000000;
+            margin-right: 0px;
+        }
 
         .top-bar {
             background-color: #EA7900;
             height: 70px;
             width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
             flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-family: 'Wcoartl-Principal', 'Wcoartl-Simbolos', 'FontAwesome-Gatosauriocrack', sans-serif;
+            font-size: 2rem;
+            color: #000000;
+            margin: 0;
+            line-height: 70px;
         }
 
         .main-content {
@@ -59,48 +77,26 @@
 
         img {
             width: 110vw;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 70px);
             object-fit: contain;
-            border: none;
-            outline: none;
             display: block;
         }
-        
-        @font-face {
-            font-family: 'Wcoartl-Principal';
-            src: url('Web/otf/Wcoartl.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-         }
-
-        @font-face {
-            font-family: 'Wcoartl-Simbolos';
-            src: url('Web/otf/Wcoartl_simbolos.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-         }
-
-         h1 {
-           font-family: 'Wcoartl-Principal', 'Wcoartl-Simbolos', 'FontAwesome-Gatosauriocrack', sans-serif;
-           font-size: 3rem;
-           margin: 10px 0;
-         }
-
     </style>
 </head>
 <body id="background">
 
-    <section class="top-bar" >
-    	<h1>GatosauriocrackWorl</h1>
-    <i class="icon-meli-icono"></i>
-    </section>
+    <header class="top-bar">
+        <i class="icon-meli-icono"></i>
+        <h1>GatosauriocrackWorl</h1>
+    </header>
 
     <div class="main-content">
         <img id="random-img" src="" alt="404">
     </div>
 
     <script>
-        const numeroAleatorio = Math.floor(Math.random() * 7) + 1;
+        const totalFotos = 7;
+        const numeroAleatorio = Math.floor(Math.random() * totalFotos) + 1;
         document.getElementById('random-img').src = `404png/${numeroAleatorio}.png`;
 
         const colores = ['#FFFFFF', '#000000'];
